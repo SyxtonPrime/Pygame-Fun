@@ -75,53 +75,47 @@ def extinction_event(grid, size):
             endInt += Int
             endStr += Str
             endAgi += Agi
-    print('Extinxtion', (startInt, startStr, startAgi),(endInt, endStr, endAgi),
-        (startInt - endInt, startStr - endStr, startAgi - endAgi))
+    print('Extinction', (int(startInt), int(startStr), int(startAgi)),(int(endInt), int(endStr), int(endAgi)),
+        (int(startInt - endInt), int(startStr - endStr), int(startAgi - endAgi)),
+        (int(100*(1 - endInt/startInt)), int(100*(1 - endStr/startStr)), int(100*(1 - endAgi/startAgi))))
     return grid
 
 def meteor(grid, size):
     num = int(3*size/4)
-    startInt, startStr, startAgi, endInt, endStr, endAgi = 0,0,0,0,0,0
     a = random()
     if a < 0.25:
-        for i in range(size):
-            for j in range(size):
-                if (i < num) & (j < num):
-                    grid[i][j] = (0.001, 0.001, 0.001)
-                else:
-                    scalar = random()/4
-                    (Int, Str, Agi) = grid[i][j]
-                    grid[i][j] = (scalar*Int, scalar*Str, scalar*Agi)
+        grid, startInt, startStr, startAgi, endInt, endStr, endAgi = meteorimpact(grid, size, 0, num, 0, num)
     elif a < 0.5:
-        for i in range(size):
-            for j in range(size):
-                if (i < num) & (j > (size-num)):
-                    grid[i][j] = (0.001, 0.001, 0.001)
-                else:
-                    scalar = random()/4
-                    (Int, Str, Agi) = grid[i][j]
-                    grid[i][j] = (scalar*Int, scalar*Str, scalar*Agi)
+        grid, startInt, startStr, startAgi, endInt, endStr, endAgi = meteorimpact(grid, size, 0, num, size-num, size)
     elif a < 0.75:
-        for i in range(size):
-            for j in range(size):
-                if (i > (size-num)) & (j < num):
-                    grid[i][j] = (0.001, 0.001, 0.001)
-                else:
-                    scalar = random()/4
-                    (Int, Str, Agi) = grid[i][j]
-                    grid[i][j] = (scalar*Int, scalar*Str, scalar*Agi)
+        grid, startInt, startStr, startAgi, endInt, endStr, endAgi = meteorimpact(grid, size, size-num, size, 0, num)
     else:
-        for i in range(size):
-            for j in range(size):
-                if (i > (size-num)) & (j > (size-num)):
-                    grid[i][j] = (0.001, 0.001, 0.001)
-                else:
-                    scalar = random()/4
-                    (Int, Str, Agi) = grid[i][j]
-                    grid[i][j] = (scalar*Int, scalar*Str, scalar*Agi)
-    print('Meteor', (startInt, startStr, startAgi),(endInt, endStr, endAgi),
-        (startInt - endInt, startStr - endStr, startAgi - endAgi))
+        grid, startInt, startStr, startAgi, endInt, endStr, endAgi = meteorimpact(grid, size, size-num, size, size-num, size)
+    print('Meteor', (int(startInt), int(startStr), int(startAgi)),(int(endInt), int(endStr), int(endAgi)),
+        (int(startInt - endInt), int(startStr - endStr), int(startAgi - endAgi)),
+        (int(100*(1 - endInt/startInt)), int(100*(1 - endStr/startStr)), int(100*(1 - endAgi/startAgi))))
     return grid
+
+def meteorimpact(grid, size, minx, maxx, miny, maxy):
+    startInt, startStr, startAgi, endInt, endStr, endAgi = 0,0,0,0,0,0
+    for i in range (size):
+        for j in range (size):
+            Int, Str, Agi = grid[i][j]
+            startInt += Int
+            startStr += Str
+            startAgi += Agi
+            if (minx <= i <= maxx) & (miny <= j <= maxy):
+                grid[i][j] = (0.001, 0.001, 0.001)
+                endInt += 0.001
+                endStr += 0.001
+                endAgi += 0.001
+            else:
+                scalar = random()/4
+                grid[i][j] = (scalar*Int, scalar*Str, scalar*Agi)
+                endInt += scalar*Int
+                endStr += scalar*Str
+                endAgi += scalar*Agi
+    return (grid, startInt, startStr, startAgi, endInt, endStr, endAgi)
 
 def celltransitioner(size, grid, j, k):
     inc = random()
