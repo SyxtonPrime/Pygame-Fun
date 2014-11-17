@@ -212,6 +212,6 @@ def gridcreator(size):
         return [[(random(), random(), random()) for x in range (size)] for y in range (size)]
 
 t1 = time()
-Evolution(40, 0)
+Evolution(50, 0)
 t2 = time()
 print (t2-t1)
